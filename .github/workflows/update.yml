@@ -21,6 +21,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Update the repo
+        id: update_repo
         run: |
           set -euo pipefail
 
@@ -42,3 +43,19 @@ jobs:
           # Push commit and its tag(s)
           git push origin HEAD
           git push origin --tags
+
+          VERSION=$(git describe --tags --abbrev=0 2>/dev/null)
+          echo version=$VERSION >> $GITHUB_OUTPUT
+
+      - name: Update GitHub Release
+        if: ${{ steps.update_repo.outputs.version }}
+        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2
+        with:
+          tag_name: ${{ steps.update_repo.outputs.version }}
+          make_latest: true
+          body: |
+            ## Changes
+
+            - Update to libgraft version [${{ steps.update_repo.outputs.version }}]
+
+            [${{ steps.update_repo.outputs.version }}]: https://github.com/orbitinghail/graft/releases/tag/${{ steps.update_repo.outputs.version }}

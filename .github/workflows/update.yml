@@ -1,0 +1,44 @@
+name: Update libgraft.swift
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: macos-14
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git identity
+        run: |
+          git config --global user.name  "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Update the repo
+        run: |
+          set -euo pipefail
+
+          before_sha=$(git rev-parse HEAD)
+          ./update.sh
+          after_sha=$(git rev-parse HEAD)
+
+          if [[ "$before_sha" == "$after_sha" ]]; then
+            echo "Nothing changed – skipping push."
+            exit 0
+          fi
+
+          # Ensure at least one tag points at the new commit
+          if [[ $(git tag --points-at "$after_sha" | wc -l) -eq 0 ]]; then
+            echo "ERROR: update.sh made a commit but didn’t create a tag." >&2
+            exit 1
+          fi
+
+          # Push commit and its tag(s)
+          git push origin HEAD
+          git push origin --tags

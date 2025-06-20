@@ -24,20 +24,28 @@ echo "Checksumming $XC_NAME"
 CHECKSUM=$(swift package compute-checksum "$TMPDIR/$XC_NAME")
 echo "Checksum: $CHECKSUM"
 
-# 5. Check if checksum changed using checksum.txt
+# 5. Verify: checksum changes <=> version changes
 CHECKSUM_FILE="checksum.txt"
-if [[ -f "$CHECKSUM_FILE" ]]; then
-    CURRENT_CHECKSUM=$(cat "$CHECKSUM_FILE")
-    # Get the latest git tag (current version)
-    CURRENT_TAG=$(git describe --tags --abbrev=0)
-    if [[ "$CHECKSUM" == "$CURRENT_CHECKSUM" ]]; then
-        echo "Checksum unchanged ($CHECKSUM). No update needed."
-        exit 0
-    fi
-    if [[ "$LATEST_TAG" == "$CURRENT_TAG" ]]; then
-        echo "ERROR: Checksum changed but version ($LATEST_TAG) did not. Refusing to update."
-        exit 1
-    fi
+CURRENT_CHECKSUM=""
+[[ -f "$CHECKSUM_FILE" ]] && CURRENT_CHECKSUM=$(<"$CHECKSUM_FILE")
+
+CURRENT_TAG=$(git describe --tags --abbrev=0 2>/dev/null || true)
+
+version_changed=0
+[[ "$LATEST_TAG" != "$CURRENT_TAG" ]] && version_changed=1
+
+checksum_changed=0
+[[ "$CHECKSUM" != "$CURRENT_CHECKSUM" ]] && checksum_changed=1
+
+if (( version_changed != checksum_changed )); then
+    echo "ERROR: version_changed=${version_changed}, checksum_changed=${checksum_changed}; they must match." >&2
+    exit 1
+fi
+
+# Nothing changed → exit early
+if (( version_changed == 0 )); then
+    echo "No update needed."
+    exit 0
 fi
 
 # 6. Output Package.swift

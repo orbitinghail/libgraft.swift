@@ -58,4 +58,4 @@ jobs:
 
             - Update to libgraft version [${{ steps.update_repo.outputs.version }}]
 
-            [${{ steps.update_repo.outputs.version }}]: https://github.com/orbitinghail/graft/releases/tag/${{ steps.update_repo.outputs.version }}
+            [${{ steps.update_repo.outputs.version }}]: https://github.com/orbitinghail/graft/releases/tag/v${{ steps.update_repo.outputs.version }}

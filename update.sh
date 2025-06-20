@@ -5,7 +5,13 @@ REPO="orbitinghail/graft"
 XC_NAME="libgraft.xcframework.zip"
 
 # 1. Get latest release tag
-LATEST_TAG=$(curl -s "https://api.github.com/repos/$REPO/releases/latest" | jq -r .tag_name)
+LATEST_TAG=$(curl -fs "https://api.github.com/repos/$REPO/releases/latest" | jq -r .tag_name)
+
+# verify latest tag matches semver
+if [[ ! "$LATEST_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo "ERROR: Latest tag '$LATEST_TAG' does not match semver format." >&2
+    exit 1
+fi
 
 echo "Updating package to $LATEST_TAG"
 
@@ -17,7 +23,7 @@ TMPDIR=$(mktemp -d)
 trap 'rm -rf "$TMPDIR"' EXIT
 
 echo "Downloading $URL"
-curl -sL -o "$TMPDIR/$XC_NAME" "$URL"
+curl -fsL -o "$TMPDIR/$XC_NAME" "$URL"
 
 # 4. Compute checksum
 echo "Checksumming $XC_NAME"

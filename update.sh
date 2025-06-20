@@ -28,9 +28,15 @@ echo "Checksum: $CHECKSUM"
 CHECKSUM_FILE="checksum.txt"
 if [[ -f "$CHECKSUM_FILE" ]]; then
     CURRENT_CHECKSUM=$(cat "$CHECKSUM_FILE")
+    # Get the latest git tag (current version)
+    CURRENT_TAG=$(git describe --tags --abbrev=0)
     if [[ "$CHECKSUM" == "$CURRENT_CHECKSUM" ]]; then
         echo "Checksum unchanged ($CHECKSUM). No update needed."
         exit 0
+    fi
+    if [[ "$LATEST_TAG" == "$CURRENT_TAG" ]]; then
+        echo "ERROR: Checksum changed but version ($LATEST_TAG) did not. Refusing to update."
+        exit 1
     fi
 fi
 

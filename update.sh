@@ -24,7 +24,17 @@ echo "Checksumming $XC_NAME"
 CHECKSUM=$(swift package compute-checksum "$TMPDIR/$XC_NAME")
 echo "Checksum: $CHECKSUM"
 
-# 5. Output Package.swift
+# 5. Check if checksum changed using checksum.txt
+CHECKSUM_FILE="checksum.txt"
+if [[ -f "$CHECKSUM_FILE" ]]; then
+    CURRENT_CHECKSUM=$(cat "$CHECKSUM_FILE")
+    if [[ "$CHECKSUM" == "$CURRENT_CHECKSUM" ]]; then
+        echo "Checksum unchanged ($CHECKSUM). No update needed."
+        exit 0
+    fi
+fi
+
+# 6. Output Package.swift
 cat <<EOF >Package.swift
 // swift-tools-version:5.6
 import PackageDescription
@@ -50,7 +60,10 @@ let package = Package(
 )
 EOF
 
-# 6. commit the change and tag it
-git add Package.swift
+# 7. Write new checksum to checksum.txt
+echo "$CHECKSUM" > "$CHECKSUM_FILE"
+
+# 8. commit the change and tag it
+git add Package.swift "$CHECKSUM_FILE"
 git commit -m "Update to $LATEST_TAG"
 git tag "$LATEST_TAG"

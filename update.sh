@@ -13,6 +13,9 @@ if [[ ! "$LATEST_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
     exit 1
 fi
 
+# strip the `v` prefix for our version number to match what Swift expects
+VERSION=${LATEST_TAG#v}
+
 echo "Updating package to $LATEST_TAG"
 
 # 2. Build URL
@@ -38,7 +41,7 @@ CURRENT_CHECKSUM=""
 CURRENT_TAG=$(git describe --tags --abbrev=0 2>/dev/null || true)
 
 version_changed=0
-[[ "$LATEST_TAG" != "$CURRENT_TAG" ]] && version_changed=1
+[[ "$VERSION" != "$CURRENT_TAG" ]] && version_changed=1
 
 checksum_changed=0
 [[ "$CHECKSUM" != "$CURRENT_CHECKSUM" ]] && checksum_changed=1
@@ -85,5 +88,5 @@ echo "$CHECKSUM" > "$CHECKSUM_FILE"
 
 # 8. commit the change and tag it
 git add Package.swift "$CHECKSUM_FILE"
-git commit -m "Update to $LATEST_TAG"
-git tag "$LATEST_TAG"
+git commit -m "Update to $VERSION"
+git tag "$VERSION"

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO="orbitinghail/graft"
-XC_NAME="libgraft.xcframework.zip"
+XC_NAME="libgraft_ext.xcframework.zip"
 
 # 1. Get latest release tag
 LATEST_TAG=$(curl -fs "https://api.github.com/repos/$REPO/releases/latest" | jq -r .tag_name)
@@ -63,19 +63,19 @@ cat <<EOF >Package.swift
 import PackageDescription
 
 let package = Package(
-    name: "libgraft",
+    name: "libgraft_ext",
     platforms: [
         .iOS(.v11)
     ],
     products: [
         .library(
-            name: "libgraft",
-            targets: ["libgraft"]
+            name: "libgraft_ext",
+            targets: ["libgraft_ext"]
         )
     ],
     targets: [
         .binaryTarget(
-            name: "libgraft",
+            name: "libgraft_ext",
             url: "$URL",
             checksum: "$CHECKSUM"
         )

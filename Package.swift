@@ -2,21 +2,21 @@
 import PackageDescription
 
 let package = Package(
-    name: "libgraft-ext",
+    name: "Graft",
     platforms: [
         .iOS(.v11)
     ],
     products: [
         .library(
-            name: "libgraft_ext",
-            targets: ["libgraft_ext"]
+            name: "Graft",
+            targets: ["Graft"]
         )
     ],
     targets: [
         .binaryTarget(
-            name: "libgraft_ext",
-            url: "https://github.com/orbitinghail/graft/releases/download/v0.1.5/libgraft_ext.xcframework.zip",
-            checksum: "2ddb8c98f66e5bf28ae7d3b97792eca47f7938a515228955fccd633ca41280ca"
+            name: "Graft",
+            url: "https://github.com/orbitinghail/graft/releases/download/v0.2.0/libgraft-ext.xcframework.zip",
+            checksum: "c824c34a50445998a1874d02a58db8d30f7622b3ab98c7711638cb427498ddfb"
         )
     ]
 )

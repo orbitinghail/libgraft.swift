@@ -2,7 +2,7 @@
 set -euo pipefail
 
 REPO="orbitinghail/graft"
-XC_NAME="libgraft_ext.xcframework.zip"
+XC_NAME="libgraft-ext.xcframework.zip"
 
 # 1. Get latest release tag
 LATEST_TAG=$(curl -fs "https://api.github.com/repos/$REPO/releases/latest" | jq -r .tag_name)

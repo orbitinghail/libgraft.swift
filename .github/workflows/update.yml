@@ -1,4 +1,4 @@
-name: Update libgraft_ext.swift
+name: Update Graft.swift
 
 on:
   workflow_dispatch:
@@ -56,6 +56,6 @@ jobs:
           body: |
             ## Changes
 
-            - Update to libgraft_ext version [${{ steps.update_repo.outputs.version }}]
+            - Update to Graft version [${{ steps.update_repo.outputs.version }}]
 
             [${{ steps.update_repo.outputs.version }}]: https://github.com/orbitinghail/graft/releases/tag/v${{ steps.update_repo.outputs.version }}

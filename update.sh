@@ -63,19 +63,19 @@ cat <<EOF >Package.swift
 import PackageDescription
 
 let package = Package(
-    name: "libgraft_ext",
+    name: "Graft",
     platforms: [
         .iOS(.v11)
     ],
     products: [
         .library(
-            name: "libgraft_ext",
-            targets: ["libgraft_ext"]
+            name: "Graft",
+            targets: ["Graft"]
         )
     ],
     targets: [
         .binaryTarget(
-            name: "libgraft_ext",
+            name: "Graft",
             url: "$URL",
             checksum: "$CHECKSUM"
         )

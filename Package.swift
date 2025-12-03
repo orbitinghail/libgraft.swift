@@ -2,7 +2,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "libgraft_ext",
+    name: "libgraft-ext",
     platforms: [
         .iOS(.v11)
     ],

@@ -15,8 +15,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "Graft",
-            url: "https://github.com/orbitinghail/graft/releases/download/v0.2.0/libgraft-ext.xcframework.zip",
-            checksum: "c824c34a50445998a1874d02a58db8d30f7622b3ab98c7711638cb427498ddfb"
+            url: "https://github.com/orbitinghail/graft/releases/download/v0.2.1/libgraft-ext.xcframework.zip",
+            checksum: "98856f04b3a5ae51f5e0ce7d7394211f86d522e9a0e73cea34c5c098c561cb09"
         )
     ]
 )

@@ -65,7 +65,8 @@ import PackageDescription
 let package = Package(
     name: "Graft",
     platforms: [
-        .iOS(.v11)
+        .iOS(.v11),
+        .macOS(.v11),
     ],
     products: [
         .library(

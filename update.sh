@@ -59,14 +59,14 @@ fi
 
 # 6. Output Package.swift
 cat <<EOF >Package.swift
-// swift-tools-version:5.7
+// swift-tools-version:5.9
 import PackageDescription
 
 let package = Package(
     name: "Graft",
     platforms: [
-        .iOS(.v11),
-        .macOS(.v13),
+        .iOS(.v17),
+        .macOS(.v11),
     ],
     products: [
         .library(

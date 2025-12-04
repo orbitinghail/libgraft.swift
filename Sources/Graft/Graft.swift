@@ -1,7 +1,7 @@
 import Foundation
 import libgraft_ext
 
-/// Swift wrapper for the Graft distributed SQLite extension.
+/// Swift wrapper for the Graft SQLite extension.
 ///
 /// ## Configuration
 ///
@@ -29,11 +29,8 @@ import libgraft_ext
 /// let configPath = "/path/to/graft.toml"
 /// setenv("GRAFT_CONFIG", configPath, 1)
 ///
-/// // Initialize Graft (registers with SQLite)
+/// // Initialize Graft (only run this once)
 /// try Graft.static_init()
-///
-/// // Now you can use SQLite with Graft pragmas
-/// // See https://graft.rs/docs/sqlite/pragmas/
 /// ```
 public enum Graft {
     /// Error thrown when Graft initialization fails.

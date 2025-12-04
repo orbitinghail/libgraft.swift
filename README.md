@@ -1,55 +1,81 @@
-# libgraft.swift
+# Graft.swift
 
 This repo is a Swift Package Manager (SPM) package to make it easier to use Graft within Swift projects.
 
-## Adding libgraft.swift to Your Xcode Project
+## Adding Graft.swift to Your Xcode Project
 
-Follow these steps to add `libgraft.swift` to your Xcode project using Swift Package Manager:
+Follow these steps to add `Graft.swift` to your Xcode project using Swift Package Manager:
 
 1. **Open your Xcode project**.
 
 2. **Go to** `File` > `Add Package Dependencies...`
 
-3. **Enter the repository URL** for `libgraft.swift` in the search bar (top right):
+3. **Enter the repository URL** for `Graft.swift` in the search bar (top right):
 
    ```
-   https://github.com/orbitinghail/libgraft.swift.git
+   https://github.com/orbitinghail/Graft.swift.git
    ```
 
 4. **Select the version** you want to use (usually the latest).
 
 5. **Click "Add Package"**.
 
-6. **Add the libgraft "Package Product" to your application target** on the next screen.
+6. **Add the Graft "Package Product" to your application target** on the next screen.
 
 7. **Import and initialize the library** during application startup:
 
    ```swift
-   // first, you need to import libgraft
-   import libgraft
-   ```
+   import Foundation
+   import Graft
 
-   ```swift
-   // then add this to your application startup process
-   // this example assumes you are using GRDB for SQLite
+   // Configure Graft using graft.toml and environment variables
    let fm = FileManager.default
    let supportDir = try fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-   let configPath = supportDir.appendingPathComponent("graft-config.toml")
-   let dataPath = supportDir.appendingPathComponent("data")
+   let configPath = supportDir.appendingPathComponent("graft.toml")
+   let dataPath = supportDir.appendingPathComponent("graft-data")
 
-   // write out a libgraft config file and set the GRAFT_CONFIG env variable
+   // Create a graft.toml configuration file
+   // See https://graft.rs/docs/sqlite/config/ for all configuration options
    let config = """
    data_dir = "\(dataPath.path)"
-   autosync = false
    make_default = true
+
+   [remote]
+   type = "memory"  // Use "fs" or "s3_compatible" for production
    """
    try config.write(to: configPath, atomically: true, encoding: .utf8)
+
+   // Set the GRAFT_CONFIG environment variable
    setenv("GRAFT_CONFIG", configPath.path, 1)
 
-   // Initialize graft
-   let tempDB = try DatabaseQueue()
-   _ = tempDB.inDatabase { db in libgraft.graft_static_init(db.sqliteConnection) }
+   // Initialize Graft - registers graft with SQLite
+   try Graft.static_init()
 
-   // Open real DB with random Volume ID
-   let db = try DatabaseQueue(path: "random")
+   // Now you can use SQLite with Graft pragmas
+   // See https://graft.rs/docs/sqlite/pragmas/ for available pragmas
    ```
+
+## Configuration
+
+Graft is configured via a `graft.toml` file. Key configuration options:
+
+- **data_dir**: Where Graft stores local LSM storage data
+- **remote**: Configuration for remote object storage (memory, filesystem, or S3-compatible)
+- **autosync**: Background synchronization interval in seconds
+- **make_default**: Makes Graft VFS the default for new connections
+- **log_file**: Path to write verbose operation logs
+
+See the [Graft configuration documentation](https://graft.rs/docs/sqlite/config/) for complete details.
+
+## Using Graft
+
+Once initialized, you can use Graft's custom SQLite pragmas to manage distributed databases:
+
+```sql
+PRAGMA graft_new;  -- Create a new volume
+PRAGMA graft_info;  -- Get volume information
+PRAGMA graft_push;  -- Push local changes to remote
+PRAGMA graft_pull;  -- Pull and merge remote changes
+```
+
+See the [Graft pragmas documentation](https://graft.rs/docs/sqlite/pragmas/) for all available commands.

@@ -1,4 +1,4 @@
-name: Update libgraft.swift
+name: Update Graft.swift
 
 on:
   workflow_dispatch:
@@ -34,6 +34,12 @@ jobs:
             exit 0
           fi
 
+          # build and test to ensure the updated package works
+          pushd Test
+          swift build
+          .build/debug/Test
+          popd
+
           # Ensure at least one tag points at the new commit
           if [[ $(git tag --points-at "$after_sha" | wc -l) -eq 0 ]]; then
             echo "ERROR: update.sh made a commit but didn’t create a tag." >&2
@@ -56,6 +62,6 @@ jobs:
           body: |
             ## Changes
 
-            - Update to libgraft version [${{ steps.update_repo.outputs.version }}]
+            - Update to Graft version [${{ steps.update_repo.outputs.version }}]
 
             [${{ steps.update_repo.outputs.version }}]: https://github.com/orbitinghail/graft/releases/tag/v${{ steps.update_repo.outputs.version }}

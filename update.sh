@@ -59,14 +59,14 @@ fi
 
 # 6. Output Package.swift
 cat <<EOF >Package.swift
-// swift-tools-version:5.6
+// swift-tools-version:5.7
 import PackageDescription
 
 let package = Package(
     name: "Graft",
     platforms: [
         .iOS(.v11),
-        .macOS(.v11),
+        .macOS(.v13),
     ],
     products: [
         .library(
@@ -75,8 +75,15 @@ let package = Package(
         )
     ],
     targets: [
-        .binaryTarget(
+        .target(
             name: "Graft",
+            dependencies: ["libgraft_ext"],
+            linkerSettings: [
+                .linkedLibrary("sqlite3"),
+            ]
+        ),
+        .binaryTarget(
+            name: "libgraft_ext",
             url: "$URL",
             checksum: "$CHECKSUM"
         )
